@@ -4,14 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Seu Presente ❤️</title>
-
 <style>
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
-
 body {
     min-height: 100vh;
     display: flex;
@@ -24,7 +22,6 @@ body {
     color: #fff;
     overflow: hidden;
 }
-
 .card {
     width: 100%;
     max-width: 430px;
@@ -39,118 +36,70 @@ body {
     backdrop-filter: blur(10px);
     animation: aparecer 1.2s ease;
 }
-
 .emoji {
     font-size: 68px;
     margin-bottom: 20px;
     animation: flutuar 3s ease-in-out infinite;
 }
-
 h1 {
     font-size: 34px;
     margin-bottom: 18px;
     font-weight: normal;
 }
-
 .destaque {
     font-size: 24px;
     margin: 20px 0;
     color: #f5d0b8;
 }
-
 p {
     font-size: 18px;
     line-height: 1.7;
     color: #eee;
 }
-
 .linha {
     width: 80px;
     height: 1px;
     background: rgba(255,255,255,0.4);
     margin: 28px auto;
 }
-
 .assinatura {
     margin-top: 30px;
     font-size: 20px;
     color: #f5d0b8;
 }
-
 .coracao {
     position: fixed;
     bottom: -30px;
     font-size: 18px;
     opacity: 0.7;
     animation: subir linear infinite;
-    pointer-events: none;
 }
-
-/* Botão da música */
-#musicaBtn {
-    position: fixed;
-    bottom: 18px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 18px;
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 30px;
-    background: rgba(0,0,0,0.45);
-    color: #fff;
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 14px;
-    cursor: pointer;
-    backdrop-filter: blur(8px);
-    z-index: 20;
-    transition: 0.3s;
-}
-
-#musicaBtn:hover {
-    background: rgba(255,255,255,0.15);
-}
-
-#youtubePlayer {
-    position: fixed;
-    width: 1px;
-    height: 1px;
-    opacity: 0.01;
-    pointer-events: none;
-    left: -10px;
-    top: -10px;
-}
-
 @keyframes aparecer {
     from {
         opacity: 0;
         transform: translateY(25px) scale(0.97);
     }
-
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
     }
 }
-
 @keyframes flutuar {
     0%, 100% {
         transform: translateY(0);
     }
-
     50% {
         transform: translateY(-8px);
     }
 }
-
 @keyframes subir {
     from {
         transform: translateY(0) rotate(0deg);
         opacity: 0;
     }
-
     15% {
         opacity: 0.7;
     }
-
     to {
         transform: translateY(-110vh) rotate(25deg);
         opacity: 0;
@@ -158,254 +107,60 @@ p {
 }
 </style>
 </head>
-
 <body>
 
 <div class="card">
-
     <div class="emoji">🍫</div>
-
     <h1>Você ganhou um presente!</h1>
-
     <div class="linha"></div>
-
     <div class="destaque">
         ❤️ VALE-CHOCOLATE ❤️
     </div>
-
     <p>
         Este cartão vale
         <strong>1 chocolate à sua escolha.</strong>
     </p>
-
     <p style="margin-top:18px;">
         Pode escolher o seu favorito.
         <br>
         Hoje a dieta está oficialmente cancelada. 😂❤️
     </p>
-
     <div class="linha"></div>
-
     <p>
         Porque momentos doces
         <br>
         merecem um chocolate à altura. 🍫
     </p>
-
     <div class="assinatura">
         Com amor,<br>
         <strong>Danilo ❤️</strong>
     </div>
-
 </div>
 
-
-<!-- YouTube escondido -->
-<div id="youtubePlayer"></div>
-
-<!-- Botão caso o navegador bloqueie o autoplay -->
-<button id="musicaBtn" onclick="iniciarMusica()">
-    🎵 Tocar nossa música ❤️
-</button>
-
+<!-- Música: Jorge & Mateus — A Hora É Agora -->
+<iframe
+    width="0"
+    height="0"
+    src="https://www.youtube.com/embed/P8nYqA3NyIc?autoplay=1&loop=1&playlist=P8nYqA3NyIc"
+    title="A Hora É Agora - Jorge & Mateus"
+    frameborder="0"
+    allow="autoplay; encrypted-media">
+</iframe>
 
 <script>
-
-/*
-=========================================================
-MÚSICA
-=========================================================
-
-"A Hora é Agora" — Jorge & Mateus
-
-O ID abaixo deve ser o ID do vídeo oficial do YouTube.
-Caso o vídeo seja alterado/removido pelo YouTube,
-basta trocar o valor de VIDEO_ID.
-=========================================================
-*/
-
-const VIDEO_ID = "7sQJ0w2w3nM";
-
-let player;
-let musicaIniciada = false;
-
-
-/* Carrega a API do YouTube */
-const tag = document.createElement("script");
-
-tag.src = "https://www.youtube.com/iframe_api";
-
-document.head.appendChild(tag);
-
-
-/* O YouTube chama esta função quando estiver pronto */
-function onYouTubeIframeAPIReady() {
-
-    player = new YT.Player("youtubePlayer", {
-
-        height: "1",
-        width: "1",
-
-        videoId: VIDEO_ID,
-
-        playerVars: {
-            autoplay: 1,
-            controls: 0,
-            loop: 1,
-            playlist: VIDEO_ID,
-            playsinline: 1,
-            rel: 0,
-            modestbranding: 1
-        },
-
-        events: {
-
-            onReady: function(event) {
-
-                /*
-                Tenta iniciar imediatamente.
-                Alguns navegadores bloqueiam o som.
-                */
-                event.target.setVolume(100);
-                event.target.playVideo();
-
-                musicaIniciada = true;
-
-                esconderBotao();
-
-            },
-
-            onStateChange: function(event) {
-
-                /*
-                Quando terminar, reinicia.
-                */
-                if (event.data === YT.PlayerState.ENDED) {
-
-                    event.target.playVideo();
-
-                }
-
-            }
-
-        }
-
-    });
-
-}
-
-
-/*
-=========================================================
-BOTÃO MANUAL
-=========================================================
-*/
-
-function iniciarMusica() {
-
-    if (!player) {
-        return;
-    }
-
-    player.unMute();
-    player.setVolume(100);
-    player.playVideo();
-
-    musicaIniciada = true;
-
-    esconderBotao();
-}
-
-
-/*
-Esconde o botão depois que a música começar.
-*/
-function esconderBotao() {
-
-    const botao = document.getElementById("musicaBtn");
-
-    if (botao) {
-
-        botao.style.opacity = "0";
-        botao.style.pointerEvents = "none";
-
-        setTimeout(() => {
-
-            botao.style.display = "none";
-
-        }, 400);
-
-    }
-
-}
-
-
-/*
-=========================================================
-TENTATIVA EXTRA DE AUTOPLAY
-=========================================================
-
-Quando a pessoa tocar em qualquer lugar da página,
-tentamos liberar o áudio.
-
-Isso é especialmente útil no iPhone,
-onde o Safari pode bloquear autoplay com som.
-=========================================================
-*/
-
-document.addEventListener("click", function() {
-
-    if (player && !musicaIniciada) {
-
-        player.unMute();
-        player.setVolume(100);
-        player.playVideo();
-
-        musicaIniciada = true;
-
-        esconderBotao();
-
-    }
-
-}, { once: true });
-
-
-/*
-=========================================================
-CORAÇÕES SUBINDO
-=========================================================
-*/
-
 function criarCoracao() {
-
     const coracao = document.createElement("div");
-
     coracao.className = "coracao";
-
-    coracao.innerHTML =
-        Math.random() > 0.5 ? "❤️" : "♡";
-
-    coracao.style.left =
-        Math.random() * 100 + "vw";
-
-    coracao.style.animationDuration =
-        (5 + Math.random() * 5) + "s";
-
-    coracao.style.fontSize =
-        (14 + Math.random() * 14) + "px";
-
+    coracao.innerHTML = Math.random() > 0.5 ? "❤️" : "♡";
+    coracao.style.left = Math.random() * 100 + "vw";
+    coracao.style.animationDuration = (5 + Math.random() * 5) + "s";
+    coracao.style.fontSize = (14 + Math.random() * 14) + "px";
     document.body.appendChild(coracao);
-
     setTimeout(() => {
-
         coracao.remove();
-
     }, 10000);
-
 }
-
 setInterval(criarCoracao, 700);
-
 </script>
 
 </body>
