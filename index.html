@@ -3,6 +3,7 @@
 <head> 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Seu Presente ❤️</title>
 
 <style>
@@ -38,7 +39,6 @@ body {
         inset 0 0 30px rgba(255,255,255,0.03);
     backdrop-filter: blur(10px);
 
-    /* Mantém o cartão abaixo dos corações */
     position: relative;
     z-index: 2;
 
@@ -82,24 +82,77 @@ p {
     color: #f5d0b8;
 }
 
-/* CORAÇÕES POR CIMA DE TUDO */
+
+/* =========================
+   BOTÃO DA MÚSICA
+   ========================= */
+
+#playMusic {
+    display: block;
+    width: 100%;
+    margin-top: 28px;
+    padding: 15px 18px;
+
+    border: none;
+    border-radius: 15px;
+
+    background: linear-gradient(135deg, #f5d0b8, #d99b78);
+    color: #35170d;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 17px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,0.35),
+        0 0 15px rgba(245,208,184,0.15);
+
+    transition: transform 0.2s ease;
+}
+
+#playMusic:active {
+    transform: scale(0.97);
+}
+
+
+/* =========================
+   PLAYER INVISÍVEL
+   ========================= */
+
+#youtubePlayer {
+    position: fixed;
+    width: 1px;
+    height: 1px;
+    left: -20px;
+    bottom: -20px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+/* =========================
+   CORAÇÕES
+   ========================= */
+
 .coracao {
     position: fixed;
     bottom: -40px;
+
     font-size: 18px;
     opacity: 0;
+
     animation: subir linear forwards;
 
-    /* Fica na frente do cartão */
     z-index: 9999;
-
     pointer-events: none;
 
-    /* Leve brilho */
     text-shadow:
         0 0 5px rgba(255,255,255,0.4),
         0 0 12px rgba(255,80,100,0.5);
 }
+
 
 @keyframes aparecer {
     from {
@@ -113,6 +166,7 @@ p {
     }
 }
 
+
 @keyframes flutuar {
     0%, 100% {
         transform: translateY(0);
@@ -122,6 +176,7 @@ p {
         transform: translateY(-8px);
     }
 }
+
 
 @keyframes subir {
     0% {
@@ -142,10 +197,12 @@ p {
         opacity: 0;
     }
 }
+
 </style>
 </head>
 
 <body>
+
 
 <div class="card">
 
@@ -183,26 +240,128 @@ p {
         <strong>Danilo ❤️</strong>
     </div>
 
+
+    <!-- BOTÃO -->
+    <button id="playMusic">
+        ▶ Tocar nossa música ❤️
+    </button>
+
 </div>
 
 
-<!-- Música: Jorge & Mateus — A Hora É Agora -->
-
-<iframe
-    width="0"
-    height="0"
-    src="https://www.youtube.com/embed/P8nYqA3NyIc?autoplay=1&loop=1&playlist=P8nYqA3NyIc"
-    title="A Hora É Agora - Jorge & Mateus"
-    frameborder="0"
-    allow="autoplay; encrypted-media">
-</iframe>
+<!-- PLAYER DO YOUTUBE -->
+<div id="youtubePlayer"></div>
 
 
 <script>
 
-/* ================================
-   CORAÇÕES FLUTUANDO
-   ================================ */
+/* =========================================
+   MÚSICA
+   Jorge & Mateus
+   A Hora É Agora (Ao Vivo)
+   ========================================= */
+
+const videoId = "P8nYqA3NyIc";
+
+let player = null;
+
+const button = document.getElementById("playMusic");
+
+
+/* Carrega a API do YouTube */
+
+const tag = document.createElement("script");
+
+tag.src = "https://www.youtube.com/iframe_api";
+
+document.head.appendChild(tag);
+
+
+/* YouTube chama automaticamente */
+
+function onYouTubeIframeAPIReady() {
+
+    player = new YT.Player("youtubePlayer", {
+
+        height: "1",
+        width: "1",
+
+        videoId: videoId,
+
+        playerVars: {
+            autoplay: 0,
+            controls: 0,
+            loop: 1,
+            playlist: videoId,
+            playsinline: 1,
+            rel: 0
+        },
+
+        events: {
+
+            onReady: function() {
+
+                button.innerHTML =
+                    "▶ Tocar nossa música ❤️";
+
+            },
+
+            onStateChange: function(event) {
+
+                if (event.data === YT.PlayerState.PLAYING) {
+
+                    button.innerHTML =
+                        "🎵 Nossa música está tocando ❤️";
+                }
+
+                if (event.data === YT.PlayerState.PAUSED) {
+
+                    button.innerHTML =
+                        "▶ Continuar nossa música ❤️";
+                }
+
+                if (event.data === YT.PlayerState.ENDED) {
+
+                    button.innerHTML =
+                        "▶ Tocar nossa música ❤️";
+                }
+            }
+        }
+    });
+}
+
+
+/* =========================================
+   CLIQUE NO BOTÃO
+   ========================================= */
+
+button.addEventListener("click", function() {
+
+    if (!player) {
+
+        button.innerHTML =
+            "⏳ Carregando música...";
+
+        return;
+    }
+
+    /* Tudo acontece dentro do clique,
+       permitindo reprodução no iPhone */
+
+    player.unMute();
+
+    player.setVolume(100);
+
+    player.playVideo();
+
+    button.innerHTML =
+        "🎵 Nossa música está tocando ❤️";
+});
+
+
+/* =========================================
+   CORAÇÕES
+   ========================================= */
 
 function criarCoracao() {
 
@@ -210,7 +369,6 @@ function criarCoracao() {
 
     coracao.className = "coracao";
 
-    /* Mais variedade de corações */
     const tipos = [
         "❤️",
         "❤️",
@@ -224,21 +382,14 @@ function criarCoracao() {
     coracao.innerHTML =
         tipos[Math.floor(Math.random() * tipos.length)];
 
-    /* Posição horizontal aleatória */
     coracao.style.left =
         Math.random() * 100 + "vw";
 
-    /* Tamanhos variados */
     coracao.style.fontSize =
         (14 + Math.random() * 20) + "px";
 
-    /* Velocidades variadas */
     coracao.style.animationDuration =
         (5 + Math.random() * 5) + "s";
-
-    /* Pequeno atraso aleatório */
-    coracao.style.animationDelay =
-        (Math.random() * 0.5) + "s";
 
     document.body.appendChild(coracao);
 
@@ -248,17 +399,14 @@ function criarCoracao() {
 }
 
 
-/* =================================
-   MAIS CORAÇÕES NA TELA
-   ================================= */
+/* Muitos corações */
 
-/* Antes: 1 coração a cada 700ms
-   Agora: vários corações */
 setInterval(criarCoracao, 180);
 
 
-/* Cria vários imediatamente ao abrir */
-for (let i = 0; i < 12; i++) {
+/* Vários já aparecem ao abrir */
+
+for (let i = 0; i < 15; i++) {
 
     setTimeout(() => {
         criarCoracao();
